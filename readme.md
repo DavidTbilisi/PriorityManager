@@ -91,7 +91,7 @@ Select the task you want to edit and update the details as prompted.
 #### 3. **List Tasks**
 
 ```bash
-python main.py list-tasks
+python main.py ls
 ```
 
 Lists all tasks sorted by their priority score.
