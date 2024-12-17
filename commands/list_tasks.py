@@ -4,7 +4,7 @@ from utils.helpers import ensure_dirs
 
 TASKS_DIR = "tasks"
 
-@click.command(name="list-tasks")
+@click.command(name="ls")
 def list_tasks():
     ensure_dirs()
     files = os.listdir(TASKS_DIR)

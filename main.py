@@ -3,6 +3,9 @@ from commands.add import add
 from commands.edit import edit
 from commands.list_tasks import list_tasks
 from commands.archive import archive
+from commands.export_csv import export_csv
+from commands.search_filter import search, filter_tasks
+
 
 @click.group()
 def cli():
@@ -12,6 +15,9 @@ cli.add_command(add)
 cli.add_command(edit)
 cli.add_command(list_tasks)
 cli.add_command(archive)
+cli.add_command(export_csv)
+cli.add_command(search)
+cli.add_command(filter_tasks)
 
 if __name__ == "__main__":
     cli()
