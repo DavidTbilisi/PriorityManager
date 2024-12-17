@@ -1,0 +1,5 @@
+tasks/
+archive/
+log.txt
+venv/
+__pycache__/
