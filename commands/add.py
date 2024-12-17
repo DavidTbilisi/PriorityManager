@@ -6,7 +6,7 @@ from utils.logger import log_action
 
 TASKS_DIR = "tasks"
 
-@click.command()
+@click.command('add', help="Add a new task with calculated priority.")
 @click.argument("task_name")
 def add(task_name):
     ensure_dirs()

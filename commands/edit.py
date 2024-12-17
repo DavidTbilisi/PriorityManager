@@ -6,7 +6,7 @@ from utils.logger import log_action
 
 TASKS_DIR = "tasks"
 
-@click.command()
+@click.command('edit', help="List all tasks and suggest which one to edit.")
 def edit():
     ensure_dirs()
     files = os.listdir(TASKS_DIR)

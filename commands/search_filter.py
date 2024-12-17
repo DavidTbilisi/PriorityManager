@@ -28,7 +28,7 @@ def search(keyword):
         click.echo(f"No tasks found containing the keyword: {keyword}")
 
 # Filter tasks by priority range
-@click.command(name="filter-tasks")
+@click.command(name="filter")
 @click.option("--min-priority", type=int, default=-999, help="Minimum priority score.")
 @click.option("--max-priority", type=int, default=999, help="Maximum priority score.")
 def filter_tasks(min_priority, max_priority):

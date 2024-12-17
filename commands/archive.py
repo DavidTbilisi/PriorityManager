@@ -7,7 +7,7 @@ import shutil
 TASKS_DIR = "tasks"
 ARCHIVE_DIR = "archive"
 # Archive a task
-@click.command()
+@click.command('archive', help="Move a task to the archive.")
 def archive():
     ensure_dirs()
     files = os.listdir(TASKS_DIR)
