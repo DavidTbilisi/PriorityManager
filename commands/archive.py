@@ -5,6 +5,7 @@ from utils.logger import log_action
 import shutil
 
 TASKS_DIR = "tasks"
+ARCHIVE_DIR = "archive"
 # Archive a task
 @click.command()
 def archive():
