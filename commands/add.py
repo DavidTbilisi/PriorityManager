@@ -13,6 +13,7 @@ def add(task_name):
     priority = calculate_priority()
     description = click.prompt("Enter task description", default="No description")
     due_date = click.prompt("Enter due date (YYYY-MM-DD)", default="No due date")
+    tags = click.prompt("Enter tags (comma-separated)", default="")
     date_added = datetime.now().isoformat()
     
     safe_task_name = "_".join(task_name.split()).replace("/", "_").replace("\\", "_")
@@ -24,6 +25,7 @@ def add(task_name):
         f.write(f"**Description:** {description}\n\n")
         f.write(f"**Priority Score:** {priority}\n\n")
         f.write(f"**Due Date:** {due_date}\n\n")
+        f.write(f"**Tags:** {tags}\n\n")
         f.write(f"**Date Added:** {date_added}\n\n")
         f.write("**Status:** Incomplete\n")
     

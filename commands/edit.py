@@ -31,6 +31,7 @@ def edit():
         new_task_name = click.prompt("Enter new task name", default=lines[0].strip("# ").strip())
         new_description = click.prompt("Enter new description", default="No description")
         new_due_date = click.prompt("Enter new due date (YYYY-MM-DD)", default="No due date")
+        new_tags = click.prompt("Enter new tags (comma-separated)", default="")
         new_priority = calculate_priority()
         
         with open(filepath, "w") as f:
@@ -38,6 +39,7 @@ def edit():
             f.write(f"**Description:** {new_description}\n\n")
             f.write(f"**Priority Score:** {new_priority}\n\n")
             f.write(f"**Due Date:** {new_due_date}\n\n")
+            f.write(f"**Tags:** {new_tags}\n\n")
             f.write(f"**Date Edited:** {datetime.now().isoformat()}\n\n")
             f.write("**Status:** Incomplete\n")
         
