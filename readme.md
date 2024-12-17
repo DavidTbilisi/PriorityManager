@@ -38,7 +38,7 @@ priority_manager/
 1. **Clone the Repository**:
 
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/DavidTbilisi/PriorityManager.git
    cd priority_manager
    ```
 
@@ -52,7 +52,7 @@ priority_manager/
 3. **Install Dependencies**:
 
    ```bash
-   pip install click
+   pip install -r requirements.txt
    ```
 
 ---
