@@ -5,6 +5,7 @@ from utils.helpers import ensure_dirs, calculate_priority
 from utils.logger import log_action
 
 TASKS_DIR = "tasks"
+STATUSES = ["To Do", "In Progress", "Blocked", "Complete", "Archived"]
 
 @click.command('add', help="Add a new task with calculated priority.")
 @click.argument("task_name")
@@ -14,6 +15,7 @@ def add(task_name):
     description = click.prompt("Enter task description", default="No description")
     due_date = click.prompt("Enter due date (YYYY-MM-DD)", default="No due date")
     tags = click.prompt("Enter tags (comma-separated)", default="")
+    status = click.prompt(f"Enter task status ({', '.join(STATUSES)})", default="To Do", type=click.Choice(STATUSES))
     date_added = datetime.now().isoformat()
     
     safe_task_name = "_".join(task_name.split()).replace("/", "_").replace("\\", "_")
@@ -27,7 +29,7 @@ def add(task_name):
         f.write(f"**Due Date:** {due_date}\n\n")
         f.write(f"**Tags:** {tags}\n\n")
         f.write(f"**Date Added:** {date_added}\n\n")
-        f.write("**Status:** Incomplete\n")
+        f.write(f"**Status:** {status}\n")
     
-    log_action(f"Added task: {task_name} with priority {priority}")
-    click.echo(f"Task added successfully with priority score: {priority}. File: {filepath}")
+    log_action(f"Added task: {task_name} with priority {priority} and status {status}")
+    click.echo(f"Task added successfully with priority score: {priority} and status: {status}. File: {filepath}")

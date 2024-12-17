@@ -6,7 +6,6 @@ from commands.archive import archive
 from commands.export import export_tasks
 from commands.search_filter import search, filter_tasks
 
-
 @click.group()
 def cli():
     pass
