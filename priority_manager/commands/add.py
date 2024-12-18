@@ -20,12 +20,14 @@ def add(task_name):
     status = click.prompt(f"Enter task status", default="To Do", type=click.Choice(STATUSES))
     date_added = datetime.now().isoformat()
     
-    safe_task_name = "_".join(task_name.split()).replace("/", "_").replace("\\", "_")
-    filename = f"{date_added.replace(':', '-')}_{safe_task_name}.md"
+    # Create a filename using a timestamp only
+    timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    filename = f"{timestamp}.md"
     filepath = os.path.join(TASKS_DIR, filename)
     
+    # Write task details to the file with the task name as a property
     with open(filepath, "w") as f:
-        f.write(f"# {task_name}\n\n")
+        f.write(f"**Name:** {task_name}\n\n")
         f.write(f"**Description:** {description}\n\n")
         f.write(f"**Priority Score:** {priority}\n\n")
         f.write(f"**Due Date:** {due_date}\n\n")

@@ -1,5 +1,4 @@
 import os
-import re
 import click
 import shutil
 from tabulate import tabulate
@@ -8,6 +7,7 @@ from ..utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 STATUSES = CONFIG["statuses"]
+TABLE_CONFIG = CONFIG["table"]["columns"]
 
 @click.command(name="ls", help="List all tasks or filter by status.")
 @click.option("--status", is_flag=True, help="Filter tasks by status interactively.")
@@ -37,8 +37,11 @@ def list_tasks(status):
         task_status = ""
         description = "No description"
         tags = "No tags"
+        name = os.path.splitext(os.path.basename(filepath))[0]
         with open(filepath, "r") as f:
             for line in f:
+                if line.startswith("**Name:**"):
+                    name = line.strip().split("**Name:**")[1].strip()
                 if line.startswith("**Priority Score:**"):
                     try:
                         priority = int(line.strip().split("**Priority Score:**")[1].strip())
@@ -50,54 +53,46 @@ def list_tasks(status):
                     description = line.strip().split("**Description:**")[1].strip()
                 if line.startswith("**Tags:**"):
                     tags = line.strip().split("**Tags:**")[1].strip()
-        return priority, task_status, description, tags
-
-    def extract_task_name(filename):
-        # Remove date-time prefix using regex
-        return re.sub(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.\d+_", "", filename).replace(".md", "")
+        return {
+            "Task Name": name,
+            "Priority Score": priority,
+            "Status": task_status,
+            "Description": description,
+            "Tags": tags,
+        }
 
     def truncate(text, length):
         """Truncate text to the given length with ellipses if necessary."""
         return (text[:length] + "...") if len(text) > length else text
 
-    # Get terminal width
-    terminal_width = shutil.get_terminal_size().columns
-
-    # Determine proportional column widths based on terminal width
-    col_widths = {
-        "Task Name": terminal_width // 5,
-        "Priority Score": terminal_width // 10,
-        "Status": terminal_width // 10,
-        "Description": terminal_width // 4,
-        "Tags": terminal_width // 6,
-    }
-
     tasks = []
     for file in files:
         filepath = os.path.join(TASKS_DIR, file)
-        priority, task_status, description, tags = get_task_details(filepath)
-        task_name = extract_task_name(file)
-        if selected_status is None or task_status.lower() == selected_status.lower():
-            tasks.append((
-                truncate(task_name, col_widths["Task Name"]),
-                priority,
-                truncate(task_status, col_widths["Status"]),
-                truncate(description, col_widths["Description"]),
-                truncate(tags, col_widths["Tags"]),
-            ))
+        task_details = get_task_details(filepath)
+        if selected_status is None or task_details["Status"].lower() == selected_status.lower():
+            tasks.append(task_details)
 
     if not tasks:
         click.secho(f"No tasks found with status: {selected_status}" if selected_status else "No tasks found.", fg="yellow")
         return
 
     # Sort tasks by priority
-    tasks.sort(key=lambda x: x[1], reverse=True)
+    tasks.sort(key=lambda x: x["Priority Score"], reverse=True)
 
-    # Prepare data for tabulate
-    headers = ["#", "Task Name", "Priority Score", "Status", "Description", "Tags"]
+    # Prepare headers and rows based on config
+    headers = [col["name"] for col in TABLE_CONFIG]
     table = []
-    for idx, (task_name, priority, task_status, description, tags) in enumerate(tasks, 1):
-        table.append([idx, task_name, priority, task_status, description, tags])
+    for idx, task in enumerate(tasks, 1):
+        row = [idx]
+        for col in TABLE_CONFIG:
+            column_name = col["name"]
+            max_length = col["max_length"]
+            cell_value = task.get(column_name, "")
+            row.append(truncate(str(cell_value), max_length))
+        table.append(row)
 
-    click.echo(tabulate(table, headers=headers, tablefmt="grid"))
+    # Insert "#" as the first header
+    headers.insert(0, "#")
 
+    # Display the table
+    click.echo(tabulate(table, headers=headers, tablefmt="github"))

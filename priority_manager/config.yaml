@@ -21,3 +21,21 @@ defaults:
   due_date: "No due date"
   tags: ""
   status: "To Do"
+
+
+table:
+  columns:
+    - name: "Task Name"
+      max_length: 20
+
+    - name: "Priority Score"
+      max_length: 52
+
+    - name: "Status"
+      max_length: 15
+
+    # - name: "Description"
+    #   max_length: 30
+
+    - name: "Tags"
+      max_length: 20

@@ -17,8 +17,16 @@ def edit():
         click.echo("No tasks found.")
         return
 
+    # Display the list of tasks with their names
     for idx, file in enumerate(files, 1):
-        click.echo(f"{idx}. {file}")
+        filepath = os.path.join(TASKS_DIR, file)
+        with open(filepath, "r") as f:
+            task_name = "Unknown Task"
+            for line in f:
+                if line.startswith("**Name:**"):
+                    task_name = line.split("**Name:**")[1].strip()
+                    break
+        click.echo(f"{idx}. {task_name}")
 
     choice = click.prompt("Enter the number of the task you want to edit", type=int)
     if not (1 <= choice <= len(files)):
@@ -30,8 +38,8 @@ def edit():
     task_data = {}
     with open(filepath, "r") as f:
         for line in f:
-            if line.startswith("#"):
-                task_data["Task Name"] = line.strip("# ").strip()
+            if line.startswith("**Name:**"):
+                task_data["Name"] = line.split("**Name:**")[1].strip()
             elif line.startswith("**Description:**"):
                 task_data["Description"] = line.split("**Description:**")[1].strip()
             elif line.startswith("**Priority Score:**"):
@@ -43,16 +51,16 @@ def edit():
             elif line.startswith("**Status:**"):
                 task_data["Status"] = line.split("**Status:**")[1].strip()
 
-    new_task_name = click.prompt("Enter new task name", default=task_data["Task Name"])
-    new_description = click.prompt("Enter new description", default=task_data["Description"])
-    new_due_date = click.prompt("Enter new due date (YYYY-MM-DD)", default=task_data["Due Date"])
-    new_tags = click.prompt("Enter new tags (comma-separated)", default=task_data["Tags"])
-    new_status = click.prompt(f"Enter new status ({', '.join(STATUSES)})", default=task_data["Status"], type=click.Choice(STATUSES))
+    new_task_name = click.prompt("Enter new task name", default=task_data.get("Name", "Unknown Task"))
+    new_description = click.prompt("Enter new description", default=task_data.get("Description", "No description"))
+    new_due_date = click.prompt("Enter new due date (YYYY-MM-DD)", default=task_data.get("Due Date", "No due date"))
+    new_tags = click.prompt("Enter new tags (comma-separated)", default=task_data.get("Tags", ""))
+    new_status = click.prompt(f"Enter new status ({', '.join(STATUSES)})", default=task_data.get("Status", "To Do"), type=click.Choice(STATUSES))
     update_priority = click.confirm("Do you want to update the priority score?", default=False)
-    new_priority = calculate_priority() if update_priority else task_data["Priority Score"]
+    new_priority = calculate_priority() if update_priority else task_data.get("Priority Score", "0")
 
     with open(filepath, "w") as f:
-        f.write(f"# {new_task_name}\n\n")
+        f.write(f"**Name:** {new_task_name}\n\n")
         f.write(f"**Description:** {new_description}\n\n")
         f.write(f"**Priority Score:** {new_priority}\n\n")
         f.write(f"**Due Date:** {new_due_date}\n\n")
