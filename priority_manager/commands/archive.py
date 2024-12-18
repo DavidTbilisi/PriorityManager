@@ -1,7 +1,7 @@
 import os
 import click
-from utils.helpers import ensure_dirs
-from utils.logger import log_action
+from ..utils.helpers import ensure_dirs
+from ..utils.logger import log_action
 import shutil
 
 TASKS_DIR = "tasks"

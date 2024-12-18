@@ -1,6 +1,6 @@
 import os
 import click
-from utils.helpers import ensure_dirs
+from ..utils.helpers import ensure_dirs
 
 TASKS_DIR = "tasks"
 

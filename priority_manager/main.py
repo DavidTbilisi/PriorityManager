@@ -1,10 +1,10 @@
 import click
-from commands.add import add
-from commands.edit import edit
-from commands.ls import list_tasks
-from commands.archive import archive
-from commands.export import export_tasks
-from commands.search_filter import search, filter_tasks
+from .commands.add import add
+from .commands.edit import edit
+from .commands.ls import list_tasks
+from .commands.archive import archive
+from .commands.export import export_tasks
+from .commands.search_filter import search, filter_tasks
 
 @click.group()
 def cli():

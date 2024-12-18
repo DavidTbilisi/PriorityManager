@@ -1,5 +1,5 @@
 import os
-from utils.config import CONFIG
+from ..utils.config import CONFIG
 import click
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]

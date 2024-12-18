@@ -1,7 +1,7 @@
 import os
 import click
-from utils.helpers import ensure_dirs
-from utils.config import CONFIG
+from ..utils.helpers import ensure_dirs
+from ..utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 STATUSES = CONFIG["statuses"]
