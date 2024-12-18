@@ -7,7 +7,7 @@ with open(os.path.join(current_dir, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 setup(
     name="priority_manager",
-    version="0.1.6",
+    version="0.1.7",
     description="A CLI tool for managing tasks with priorities and statuses.",
     long_description=long_description,  # Add the long description
     long_description_content_type="text/markdown",  # Specify the format of README.md
