@@ -21,7 +21,7 @@ def edit():
     for idx, file in enumerate(files, 1):
         filepath = os.path.join(TASKS_DIR, file)
         with open(filepath, "r") as f:
-            task_name = "Unknown Task"
+            task_name = file
             for line in f:
                 if line.startswith("**Name:**"):
                     task_name = line.split("**Name:**")[1].strip()
