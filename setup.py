@@ -3,11 +3,11 @@ import os
 
 # Read the contents of README.md
 current_dir = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(f"{current_dir}/priority_manager", "README.md"), encoding="utf-8") as f:
+with open(os.path.join(current_dir, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 setup(
     name="priority_manager",
-    version="0.1.3",
+    version="0.1.6",
     description="A CLI tool for managing tasks with priorities and statuses.",
     long_description=long_description,  # Add the long description
     long_description_content_type="text/markdown",  # Specify the format of README.md

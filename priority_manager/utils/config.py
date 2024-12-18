@@ -1,7 +1,8 @@
 import yaml
 import os
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config.yaml")
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+CONFIG_FILE = os.path.join(ROOT_DIR, "config.yaml")
 
 def load_config():
     """Load configuration from config.yaml."""

@@ -7,17 +7,17 @@ rm -rf dist/ build/ *.egg-info
 python3 setup.py sdist bdist_wheel
 
 # Step 4: Check the distribution (optional)
-# twine check dist/*
+twine check dist/*
 
 # Step 5: Upload to PyPI
-# twine upload dist/*
+twine upload dist/*
 
 # For Test PyPI
 # twine upload --repository testpypi dist/*
 
 
 # Install the package locally
-pip install -e .
+# pip install -e .
 
 # Execute 
 priority_manager --help
