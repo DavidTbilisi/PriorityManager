@@ -3,7 +3,7 @@
 # Step 2: Clean previous builds
 rm -rf dist/ build/ *.egg-info
 
-# bumpversion patch
+bumpversion patch
 
 # Step 3: Build the package
 python3 setup.py sdist bdist_wheel
@@ -12,14 +12,14 @@ python3 setup.py sdist bdist_wheel
 twine check dist/*
 
 # Step 5: Upload to PyPI
-# twine upload dist/*
+twine upload dist/*
 
 # For Test PyPI
 # twine upload --repository testpypi dist/*
 
 
 # Install the package locally
-pip install -e .
+# pip install -e .
 # 
 # Execute 
 # priority_manager --help
