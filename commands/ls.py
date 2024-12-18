@@ -1,9 +1,10 @@
 import os
 import click
 from utils.helpers import ensure_dirs
+from utils.config import CONFIG
 
-TASKS_DIR = "tasks"
-STATUSES = ["To Do", "In Progress", "Blocked", "Complete", "Archived"]
+TASKS_DIR = CONFIG["directories"]["tasks_dir"]
+STATUSES = CONFIG["statuses"]
 
 @click.command(name="ls", help="List all tasks or filter by status.")
 @click.option("--status", is_flag=True, help="Filter tasks by status interactively.")

@@ -1,7 +1,7 @@
 import click
 from commands.add import add
 from commands.edit import edit
-from commands.list_tasks import list_tasks
+from commands.ls import list_tasks
 from commands.archive import archive
 from commands.export import export_tasks
 from commands.search_filter import search, filter_tasks

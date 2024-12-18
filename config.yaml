@@ -1,0 +1,23 @@
+directories:
+  tasks_dir: "tasks"
+  archive_dir: "archive"
+  test_tasks_dir: "tests/test_tasks"
+  test_archive_dir: "tests/test_archive"
+
+statuses:
+  - "To Do"
+  - "In Progress"
+  - "Blocked"
+  - "Complete"
+  - "Archived"
+
+export_files:
+  csv: "tasks_export.csv"
+  json: "tasks_export.json"
+  yaml: "tasks_export.yaml"
+
+defaults:
+  description: "No description"
+  due_date: "No due date"
+  tags: ""
+  status: "To Do"

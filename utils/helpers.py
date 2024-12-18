@@ -1,8 +1,9 @@
 import os
+from utils.config import CONFIG
 import click
 
-TASKS_DIR = "tasks"
-ARCHIVE_DIR = "archive"
+TASKS_DIR = CONFIG["directories"]["tasks_dir"]
+ARCHIVE_DIR = CONFIG["directories"]["archive_dir"]
 
 def ensure_dirs():
     if not os.path.exists(TASKS_DIR):

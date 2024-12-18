@@ -5,7 +5,9 @@ import yaml
 import click
 from utils.helpers import ensure_dirs
 
-TASKS_DIR = "tasks"
+from utils.config import CONFIG
+
+TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 
 @click.command(name="export", help="Export tasks to CSV, JSON, or YAML file.")
 @click.argument("format", type=click.Choice(["csv", "json", "yaml"], case_sensitive=False))

@@ -3,9 +3,10 @@ from datetime import datetime
 import click
 from utils.helpers import ensure_dirs, calculate_priority
 from utils.logger import log_action
+from utils.config import CONFIG
 
-TASKS_DIR = "tasks"
-STATUSES = ["To Do", "In Progress", "Blocked", "Complete", "Archived"]
+TASKS_DIR = CONFIG["directories"]["tasks_dir"]
+STATUSES = CONFIG["statuses"]
 
 @click.command('edit', help="List all tasks and suggest which one to edit.")
 def edit():
