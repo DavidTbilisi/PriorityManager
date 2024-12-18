@@ -1,163 +1,189 @@
-# Priority Manager CLI
+# 📋 Priority Manager
 
-A command-line tool for managing tasks with features like adding, editing, listing, searching, filtering, exporting to CSV, and archiving tasks. Designed for compatibility with **Obsidian.md** by storing tasks in Markdown files.
-
-### Project Structure
-
-```
-priority_manager/
-├── main.py
-├── commands/
-│   ├── __init__.py
-│   ├── add.py
-│   ├── edit.py
-│   ├── list_tasks.py
-│   ├── export_csv.py
-│   └── search_filter.py
-└── utils/
-    ├── __init__.py
-    ├── helpers.py
-    └── logger.py
-```
-
-### Features
-
-1. **Add Task**: Add a new task with a calculated priority, description, and due date.
-2. **Edit Task**: Edit task details (name, description, due date, and priority).
-3. **List Tasks**: List tasks sorted by priority score.
-4. **Search Tasks**: Search tasks by keyword.
-5. **Filter Tasks**: Filter tasks by a specified priority range.
-6. **Export to CSV**: Export all tasks to a CSV file.
-7. **Archive Task**: Move tasks to an archive folder instead of deleting them.
-8. **Logging**: All actions are logged in `log.txt`.
+**Priority Manager** is a Command-Line Interface (CLI) tool for managing tasks with priorities, statuses, tags, and due dates. It's designed to help you organize and prioritize your tasks efficiently with ease of use and flexibility.
 
 ---
 
-### Installation
+## 🚀 Features
 
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/DavidTbilisi/PriorityManager.git
-   cd priority_manager
-   ```
-
-2. **Set Up a Virtual Environment**:
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\\Scripts\\activate
-   ```
-
-3. **Install Dependencies**:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+- **Add Tasks**: Create tasks with descriptions, priorities, due dates, tags, and statuses.
+- **Edit Tasks**: Modify existing tasks interactively.
+- **List Tasks**: Display tasks sorted by priority, with optional filtering by status or tags.
+- **Search and Filter**: Search tasks by keywords or filter them by status and tags.
+- **Export Tasks**: Export tasks to various formats, including CSV, JSON, and YAML.
+- **Archive Tasks**: Archive completed tasks to keep your workspace clean.
+- **Task Completion**: Mark tasks as complete or reopen them if needed.
+- **Configurable**: Customize task directories and settings through a configuration file (`config.yaml`).
 
 ---
 
-### Usage
+## 📦 Installation
 
-Activate the virtual environment if it's not already active:
-
-```bash
-source venv/bin/activate  # On Windows: venv\\Scripts\\activate
-```
-
-Run the `main.py` script followed by the desired command.
-
-#### 1. **Add a Task**
+You can install **Priority Manager** from PyPI:
 
 ```bash
-python main.py add "Task Name"
+pip install priority-manager
 ```
 
-You'll be prompted to enter:
-- **Urgency** (1-5)
-- **Importance** (1-5)
-- **Effort** (1-5)
-- **Description**
-- **Due Date** (YYYY-MM-DD)
+Or upgrade 
+```bash
+pip install --upgrade priority-manager
+```
 
-#### 2. **Edit a Task**
+### Update `pip` if Necessary
 
 ```bash
-python main.py edit
-```
-
-Select the task you want to edit and update the details as prompted.
-
-#### 3. **List Tasks**
-
-```bash
-python main.py ls
-```
-
-Lists all tasks sorted by their priority score.
-
-#### 4. **Search Tasks by Keyword**
-
-```bash
-python main.py search <keyword>
-```
-
-Example:
-
-```bash
-python main.py search urgent
-```
-
-#### 5. **Filter Tasks by Priority Range**
-
-```bash
-python main.py filter-tasks --min-priority 10 --max-priority 20
-```
-
-#### 6. **Export Tasks to CSV**
-
-```bash
-python main.py export-csv
-```
-
-Exports all tasks to `tasks_export.csv`.
-
-#### 7. **Archive a Task**
-
-```bash
-python main.py archive
-```
-
-Moves the selected task to the `archive` folder.
-
----
-
-### Directory Structure
-
-- **Tasks** are stored in the `tasks` directory as Markdown (`.md`) files.
-- **Archived Tasks** are moved to the `archive` directory.
-- **Logs** are saved in `log.txt`.
-
----
-
-### Example Task File Format
-
-```markdown
-# Task Title
-
-**Description:** This is a sample task description.
-
-**Priority Score:** 15
-
-**Due Date:** 2024-12-31
-
-**Date Added:** 2024-06-01T14:30:00
-
-**Status:** Incomplete
+pip install --upgrade pip
 ```
 
 ---
 
-### License
+## 🛠️ Usage
 
-This project is licensed under the MIT License.
+After installation, you can use the `priority-manager` command. Here are some basic commands:
+
+### General Help
+
+```bash
+priority-manager --help
+```
+
+### Add a Task
+
+```bash
+priority-manager add "Finish the report"
+```
+
+You'll be prompted to provide additional details such as priority, description, due date, tags, and status.
+
+### List Tasks
+
+```bash
+priority-manager ls
+```
+
+List all tasks sorted by priority.
+
+#### Filter by Status
+
+```bash
+priority-manager ls --status "In Progress"
+```
+
+### Edit a Task
+
+```bash
+priority-manager edit
+```
+
+You’ll be prompted to select a task and edit its details interactively.
+
+### Complete a Task
+
+```bash
+priority-manager complete
+```
+
+Mark a task as completed.
+
+### Archive Tasks
+
+```bash
+priority-manager archive
+```
+
+Move completed tasks to the archive directory.
+
+### Export Tasks
+
+Export tasks to CSV, JSON, or YAML:
+
+```bash
+priority-manager export --format csv
+```
+
+Available formats: `csv`, `json`, `yaml`.
+
+---
+
+## ⚙️ Configuration
+
+### `config.yaml`
+
+The tool uses a `config.yaml` file for customizable settings. The default `config.yaml` looks like this:
+
+```yaml
+directories:
+  tasks_dir: "tasks"
+  archive_dir: "archive"
+  test_tasks_dir: "tests/test_tasks"
+  test_archive_dir: "tests/test_archive"
+
+statuses:
+  - "To Do"
+  - "In Progress"
+  - "Blocked"
+  - "Complete"
+  - "Archived"
+
+export_files:
+  csv: "tasks_export.csv"
+  json: "tasks_export.json"
+  yaml: "tasks_export.yaml"
+
+defaults:
+  description: "No description"
+  due_date: "No due date"
+  tags: ""
+  status: "To Do"
+```
+
+---
+
+## 🧪 Testing
+
+Run tests using `pytest`:
+
+```bash
+TEST_MODE=true pytest
+```
+
+Ensure all dependencies are installed:
+
+```bash
+pip install pytest
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork the Repository**.
+2. **Create a New Branch**: `git checkout -b feature-name`.
+3. **Make Changes and Commit**: `git commit -m "Add new feature"`.
+4. **Push to the Branch**: `git push origin feature-name`.
+5. **Create a Pull Request**.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📝 Author
+
+**David Chincharashvili**  
+Email: [davidchincharashvili@gmail.com](mailto:ydavidchincharashvili@gmail.com)  
+GitHub: [davidtbilisi](https://github.com/davidtbilisi)
+
+---
+
+## 🌟 Acknowledgments
+
+- Built with [Click](https://click.palletsprojects.com/) for CLI functionality.
+- YAML parsing powered by [PyYAML](https://pyyaml.org/).
+
