@@ -2,14 +2,12 @@ import yaml
 import os
 import importlib.resources
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-CONFIG_FILE = importlib.resources.open_text("priority_manager", "config.yaml")
-
 def load_config():
     """Load configuration from config.yaml."""
-    with open(CONFIG_FILE, "r") as f:
+    with importlib.resources.open_text("priority_manager", "config.yaml") as f:
         return yaml.safe_load(f)
 
+# Load the configuration
 CONFIG = load_config()
 
 # Switch directories if TEST_MODE is set
