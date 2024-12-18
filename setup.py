@@ -15,6 +15,10 @@ setup(
     author="David Chincharashvili",
     author_email="davidchincharashvili@gmail.com",
     packages=find_packages(),
+    package_data={
+        "priority_manager": ["config.yaml"],
+    },
+    include_package_data=True,
     install_requires=[
         "click",
         "PyYAML"

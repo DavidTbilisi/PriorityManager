@@ -3,6 +3,8 @@
 # Step 2: Clean previous builds
 rm -rf dist/ build/ *.egg-info
 
+bumpversion patch
+
 # Step 3: Build the package
 python3 setup.py sdist bdist_wheel
 
