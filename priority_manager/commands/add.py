@@ -17,7 +17,7 @@ def add(task_name):
     description = click.prompt("Enter task description", default="No description")
     due_date = click.prompt("Enter due date (YYYY-MM-DD)", default="No due date")
     tags = click.prompt("Enter tags (comma-separated)", default="")
-    status = click.prompt(f"Enter task status ({', '.join(STATUSES)})", default="To Do", type=click.Choice(STATUSES))
+    status = click.prompt(f"Enter task status", default="To Do", type=click.Choice(STATUSES))
     date_added = datetime.now().isoformat()
     
     safe_task_name = "_".join(task_name.split()).replace("/", "_").replace("\\", "_")

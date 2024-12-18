@@ -5,6 +5,10 @@ import os
 current_dir = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(current_dir, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
+with open(os.path.join(current_dir, "requirements.txt"), encoding="utf-8") as f:
+    install_requires = f.read().splitlines()
+
+
 setup(
     name="priority_manager",
     version="0.1.9",
@@ -19,10 +23,7 @@ setup(
         "priority_manager": ["config.yaml"],
     },
     include_package_data=True,
-    install_requires=[
-        "click",
-        "PyYAML"
-    ],
+    install_requires=install_requires,
     entry_points={
         "console_scripts": [
             "priority-manager=priority_manager.main:cli"
