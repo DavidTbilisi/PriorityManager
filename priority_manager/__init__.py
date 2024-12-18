@@ -4,7 +4,7 @@ import re
 import sys
 from priority_manager.main import cli
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 
 if __name__ == '__main__':
     sys.exit(cli())
