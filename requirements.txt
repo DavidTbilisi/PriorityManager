@@ -4,7 +4,6 @@ markdown-it-py==3.0.0
 mdurl==0.1.2
 packaging==24.2
 pluggy==1.5.0
--e git+https://github.com/DavidTbilisi/PriorityManager.git@8275a7b916e940d4dab800de2f5c10dbc9ee9205#egg=priority_manager
 Pygments==2.18.0
 pytest==8.3.4
 PyYAML==6.0.2
