@@ -72,7 +72,7 @@ def edit(status, priority, due_date, tags, name, description, date_created, date
     new_description = click.prompt("Enter new description", default=task_data.get("Description", "No description"))
     new_due_date = click.prompt("Enter new due date (YYYY-MM-DD)", default=task_data.get("Due Date", "No due date"))
     new_tags = click.prompt("Enter new tags (comma-separated)", default=task_data.get("Tags", ""))
-    new_status = click.prompt(f"Enter new status ({', '.join(STATUSES)})", default=task_data.get("Status", "To Do"), type=click.Choice(STATUSES))
+    new_status = click.prompt(f"Enter new status", default=task_data.get("Status", "To Do"), type=click.Choice(STATUSES))
     update_priority = click.confirm("Do you want to update the priority score?", default=False)
     new_priority = calculate_priority() if update_priority else task_data.get("Priority Score", "0")
 
