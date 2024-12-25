@@ -16,7 +16,14 @@ def archive():
         return
     
     for idx, file in enumerate(files, 1):
-        click.echo(f"{idx}. {file}")
+        task_name = file
+        with open(os.path.join(TASKS_DIR, file), "r") as f:
+            for line in f:
+                if line.startswith("**Name:**"):
+                    task_name = line.split("**Name:**")[1].strip()
+                    break
+                
+        click.echo(f"{idx}. {task_name}")
     
     choice = click.prompt("Enter the number of the task you want to archive", type=int)
     if 1 <= choice <= len(files):
