@@ -11,14 +11,22 @@ DEFAULTS = CONFIG["defaults"]
 
 @click.command('add', help="Add a new task with calculated priority.")
 @click.argument("task_name")
-def add(task_name):
+@click.option("--yes", "-y", is_flag=True, help="Skip prompts and use default values.")
+def add(task_name, yes):
     ensure_dirs()
-    priority = calculate_priority()
-    description = click.prompt("Enter task description", default="No description")
-    due_date = click.prompt("Enter due date (YYYY-MM-DD)", default="No due date")
-    tags = click.prompt("Enter tags (comma-separated)", default="")
-    status = click.prompt(f"Enter task status", default="To Do", type=click.Choice(STATUSES))
     date_added = datetime.now().isoformat()
+    if yes:
+        priority = DEFAULTS["priority"]
+        description = DEFAULTS["description"]
+        due_date = DEFAULTS["due_date"]
+        tags = DEFAULTS["tags"]
+        status = DEFAULTS["status"]
+    else:
+        priority = calculate_priority()
+        description = click.prompt("Enter task description", default="No description")
+        due_date = click.prompt("Enter due date (YYYY-MM-DD)", default="No due date")
+        tags = click.prompt("Enter tags (comma-separated)", default="")
+        status = click.prompt(f"Enter task status", default="To Do", type=click.Choice(STATUSES))
     
     # Create a filename using a timestamp only
     timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")

@@ -1,8 +1,6 @@
 import os
 import click
-import shutil
-from tabulate import tabulate
-from ..utils.helpers import ensure_dirs
+from ..utils.helpers import ensure_dirs, show_tasks, get_task_details, files_to_tasks
 from ..utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
@@ -32,67 +30,4 @@ def list_tasks(status):
         else:
             click.secho("Invalid choice. No status filter applied.", fg="red")
 
-    def get_task_details(filepath):
-        priority = -999
-        task_status = ""
-        description = "No description"
-        tags = "No tags"
-        name = os.path.splitext(os.path.basename(filepath))[0]
-        with open(filepath, "r") as f:
-            for line in f:
-                if line.startswith("**Name:**"):
-                    name = line.strip().split("**Name:**")[1].strip()
-                if line.startswith("**Priority Score:**"):
-                    try:
-                        priority = int(line.strip().split("**Priority Score:**")[1].strip())
-                    except ValueError:
-                        pass
-                if line.startswith("**Status:**"):
-                    task_status = line.strip().split("**Status:**")[1].strip()
-                if line.startswith("**Description:**"):
-                    description = line.strip().split("**Description:**")[1].strip()
-                if line.startswith("**Tags:**"):
-                    tags = line.strip().split("**Tags:**")[1].strip()
-        return {
-            "Task Name": name,
-            "Priority Score": priority,
-            "Status": task_status,
-            "Description": description,
-            "Tags": tags,
-        }
-
-    def truncate(text, length):
-        """Truncate text to the given length with ellipses if necessary."""
-        return (text[:length] + "...") if len(text) > length else text
-
-    tasks = []
-    for file in files:
-        filepath = os.path.join(TASKS_DIR, file)
-        task_details = get_task_details(filepath)
-        if selected_status is None or task_details["Status"].lower() == selected_status.lower():
-            tasks.append(task_details)
-
-    if not tasks:
-        click.secho(f"No tasks found with status: {selected_status}" if selected_status else "No tasks found.", fg="yellow")
-        return
-
-    # Sort tasks by priority
-    tasks.sort(key=lambda x: x["Priority Score"], reverse=True)
-
-    # Prepare headers and rows based on config
-    headers = [col["name"] for col in TABLE_CONFIG]
-    table = []
-    for idx, task in enumerate(tasks, 1):
-        row = [idx]
-        for col in TABLE_CONFIG:
-            column_name = col["name"]
-            max_length = col["max_length"]
-            cell_value = task.get(column_name, "")
-            row.append(truncate(str(cell_value), max_length))
-        table.append(row)
-
-    # Insert "#" as the first header
-    headers.insert(0, "#")
-
-    # Display the table
-    click.echo(tabulate(table, headers=headers, tablefmt="github"))
+    show_tasks(files_to_tasks(files, selected_status))

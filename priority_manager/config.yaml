@@ -17,6 +17,7 @@ export_files:
   yaml: "tasks_export.yaml"
 
 defaults:
+  priority: 0
   description: "No description"
   due_date: "No due date"
   tags: ""
