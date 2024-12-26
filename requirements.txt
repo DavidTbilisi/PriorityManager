@@ -5,7 +5,6 @@ mdurl==0.1.2
 packaging==24.2
 plotly==5.24.1
 pluggy==1.5.0
--e git+https://github.com/DavidTbilisi/PriorityManager.git@17615b887a24f9d148c3412aaf82e43dc705ef12#egg=priority_manager
 Pygments==2.18.0
 pytest==8.3.4
 PyYAML==6.0.2
