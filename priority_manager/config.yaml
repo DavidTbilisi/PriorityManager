@@ -42,4 +42,4 @@ table:
       max_length: 30
 
 gantt:
-  height: 600
+  height: 800

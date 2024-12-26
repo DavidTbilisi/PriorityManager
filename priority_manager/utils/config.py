@@ -2,6 +2,8 @@ import yaml
 import os
 import importlib.resources
 
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.yaml")
+
 def load_config():
     """Load configuration from config.yaml."""
     with importlib.resources.open_text("priority_manager", "config.yaml") as f:
