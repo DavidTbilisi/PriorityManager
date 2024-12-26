@@ -11,7 +11,7 @@ with open(os.path.join(current_dir, "requirements.txt"), encoding="utf-8") as f:
 
 setup(
     name="priority_manager",
-    version="0.1.23",
+    version="0.1.24",
     description="A CLI tool for managing tasks with priorities and statuses.",
     long_description=long_description,  # Add the long description
     long_description_content_type="text/markdown",  # Specify the format of README.md
