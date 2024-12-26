@@ -1,4 +1,5 @@
 import os
+import re
 from ..utils.config import CONFIG
 from tabulate import tabulate
 import click
@@ -86,6 +87,10 @@ def get_task_details(filepath):
     name = os.path.splitext(os.path.basename(filepath))[0]
     with open(filepath, "r") as f:
         for line in f:
+            # Example 2024-12-18T14-29-39.816439_Download_CISSP_Course
+            file_name = os.path.splitext(os.path.basename(filepath))[0]
+
+
             if line.startswith("**Name:**"):
                 name = line.strip().split("**Name:**")[1].strip()
             if line.startswith("**Priority Score:**"):
@@ -99,10 +104,15 @@ def get_task_details(filepath):
                 description = line.strip().split("**Description:**")[1].strip()
             if line.startswith("**Tags:**"):
                 tags = line.strip().split("**Tags:**")[1].strip()
+            if line.startswith("**Due Date:**"):
+                due_date = line.strip().split("**Due Date:**")[1].strip()
 
     return {
         "Task Name": name,
         "Priority Score": priority,
+        "File Name": file_name,
+        "Start Date": re.search(r"\d{4}-\d{2}-\d{2}", file_name).group(),
+        "Due Date": due_date,
         "Status": task_status,
         "Description": description,
         "Tags": tags,
