@@ -49,5 +49,8 @@ def gantt():
         showgrid_y=True,
         height=400
         )
+    
+    # add vertical transparent line indicating specific date (e.g. today)
+    fig.add_vline(x=datetime.now(), line_width=.5, line_color="green")
     fig.show()
 
