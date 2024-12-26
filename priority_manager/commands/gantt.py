@@ -22,24 +22,15 @@ def gantt():
         return
 
     tasks = files_to_tasks(files)
+    if not tasks:
+        click.secho("No tasks found.", fg="yellow")
+        return
+    
     tasks.sort(key=lambda x: x["Priority Score"], reverse=True)
-
-    # Prepare headers and rows based on config
-    headers = [col["name"] for col in TABLE_CONFIG]
-    table = []
-    for idx, task in enumerate(tasks, 1):
-        row = [idx]
-        for col in TABLE_CONFIG:
-            column_name = col["name"]
-            row.append(task[column_name])
-        table.append(row)
-
-    click.echo(tabulate(table, headers=headers, tablefmt="fancy_grid"))
-
     # Prepare data for Gantt chart
     data = []
     for task in tasks:
-        pprint(task)
+        # pprint(task)
         if task["Due Date"] == "No due date":
             continue
         task_dict = {}
@@ -49,6 +40,14 @@ def gantt():
         task_dict["Resource"] = task["Status"]
 
         data.append(task_dict)
-    fig = ff.create_gantt(data, index_col="Resource", show_colorbar=True, group_tasks=True)
+    fig = ff.create_gantt(
+        data, 
+        index_col="Resource", 
+        show_colorbar=True, 
+        group_tasks=True, 
+        showgrid_x=True, 
+        showgrid_y=True,
+        height=400
+        )
     fig.show()
 
