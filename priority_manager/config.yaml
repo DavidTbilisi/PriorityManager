@@ -40,3 +40,6 @@ table:
 
     - name: "Tags"
       max_length: 30
+
+gantt:
+  height: 600

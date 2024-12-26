@@ -10,7 +10,7 @@ from ..utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 STATUSES = CONFIG["statuses"]
-TABLE_CONFIG = CONFIG["table"]["columns"]
+GANTT_HEIGHT = CONFIG["gantt"]["height"]
 
 @click.command(name="gantt", help="Generate a Gantt chart for tasks.")
 def gantt():
@@ -47,7 +47,7 @@ def gantt():
         group_tasks=True, 
         showgrid_x=True, 
         showgrid_y=True,
-        height=400
+        height=GANTT_HEIGHT
         )
     
     # add vertical transparent line indicating specific date (e.g. today)
