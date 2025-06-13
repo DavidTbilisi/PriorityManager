@@ -12,6 +12,7 @@
 - **Search and Filter**: Search tasks by keywords or filter them by status and tags.
 - **Export Tasks**: Export tasks to various formats, including CSV, JSON, and YAML.
 - **Archive Tasks**: Archive completed tasks to keep your workspace clean.
+- **Sync with Microsoft To Do**: Synchronize tasks with a dedicated list in Microsoft To Do.
 - **Task Completion**: Mark tasks as complete or reopen them if needed.
 - **Configurable**: Customize task directories and settings through a configuration file (`config.yaml`).
 
@@ -103,6 +104,14 @@ priority-manager export --format csv
 ```
 
 Available formats: `csv`, `json`, `yaml`.
+
+### Sync with Microsoft To Do
+
+Synchronize local tasks with your Microsoft To Do list. Set the `MS_TODO_TOKEN` environment variable with a valid Microsoft Graph token before running:
+
+```bash
+priority-manager sync
+```
 
 ---
 

@@ -107,11 +107,13 @@ def get_task_details(filepath):
             if line.startswith("**Due Date:**"):
                 due_date = line.strip().split("**Due Date:**")[1].strip()
 
+    match = re.search(r"\d{4}-\d{2}-\d{2}", file_name)
+    start_date = match.group() if match else "N/A"
     return {
         "Task Name": name,
         "Priority Score": priority,
         "File Name": file_name,
-        "Start Date": re.search(r"\d{4}-\d{2}-\d{2}", file_name).group(),
+        "Start Date": start_date,
         "Due Date": due_date,
         "Status": task_status,
         "Description": description,

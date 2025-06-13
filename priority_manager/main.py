@@ -4,6 +4,7 @@ from .commands.edit import edit
 from .commands.ls import list_tasks
 from .commands.archive import archive
 from .commands.export import export_tasks
+from .commands.todo import sync_tasks
 from .commands.search_filter import search, filter_tasks
 from .commands.gantt import gantt
 from .commands.conf import conf
@@ -21,6 +22,7 @@ cli.add_command(search)
 cli.add_command(filter_tasks)
 cli.add_command(gantt)
 cli.add_command(conf)
+cli.add_command(sync_tasks)
 
 if __name__ == "__main__":
     cli()
