@@ -1,7 +1,7 @@
 import pytest
 import shutil
 import os
-from utils.config import CONFIG
+from priority_manager.utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 ARCHIVE_DIR = CONFIG["directories"]["archive_dir"]

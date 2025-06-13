@@ -1,7 +1,7 @@
 import os
 from click.testing import CliRunner
-from commands.export import export_tasks
-from utils.config import CONFIG
+from priority_manager.commands.export import export_tasks
+from priority_manager.utils.config import CONFIG
 
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
