@@ -24,7 +24,7 @@ case "$1" in
         echo "Building the package for local installation..."
 
         # Build the package
-        python3 setup.py sdist bdist_wheel || { echo "Build failed"; exit 1; }
+        python setup.py sdist bdist_wheel || { echo "Build failed"; exit 1; }
 
         # Check the distribution (optional)
         echo "Checking the distribution..."
@@ -44,7 +44,7 @@ case "$1" in
         bumpversion patch || { echo "bumpversion failed"; exit 1; }
 
         # Build the package
-        python3 setup.py sdist bdist_wheel || { echo "Build failed"; exit 1; }
+        python setup.py sdist bdist_wheel || { echo "Build failed"; exit 1; }
 
         # Check the distribution (optional)
         echo "Checking the distribution..."
