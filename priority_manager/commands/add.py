@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import re
 import click
 from ..utils.helpers import ensure_dirs, calculate_priority
 from ..utils.logger import log_action
@@ -28,13 +29,21 @@ def add(task_name, yes):
         tags = click.prompt("Enter tags (comma-separated)", default="")
         status = click.prompt(f"Enter task status", default="To Do", type=click.Choice(STATUSES))
     
-    # Create a filename using a timestamp only
-    timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-    filename = f"{timestamp}.md"
-    filepath = os.path.join(TASKS_DIR, filename)
+    # Create a filename using timestamp + a slugified portion of the task name (ascii fallback)
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%dT%H-%M-%S")
+    # Slugify: keep alphanumerics, replace spaces with underscore, strip others
+    slug_base = re.sub(r"[^A-Za-z0-9 _-]+", "", task_name).strip().replace(" ", "_")
+    slug = slug_base[:30] if slug_base else "task"
+    base_filename = f"{timestamp}_{slug}.md"
+    filepath = os.path.join(TASKS_DIR, base_filename)
+    # If a file with same second exists, append microseconds to ensure uniqueness
+    if os.path.exists(filepath):
+        filename = f"{timestamp}-{now.strftime('%f')}_{slug}.md"
+        filepath = os.path.join(TASKS_DIR, filename)
     
     # Write task details to the file with the task name as a property
-    with open(filepath, "w") as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         f.write(f"**Name:** {task_name}\n\n")
         f.write(f"**Description:** {description}\n\n")
         f.write(f"**Priority Score:** {priority}\n\n")

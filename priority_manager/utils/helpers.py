@@ -85,11 +85,12 @@ def get_task_details(filepath):
     description = "No description"
     tags = "No tags"
     name = os.path.splitext(os.path.basename(filepath))[0]
-    with open(filepath, "r") as f:
+    due_date = "No due date"
+    file_name = os.path.splitext(os.path.basename(filepath))[0]
+    with open(filepath, "r", encoding="utf-8", errors="replace") as f:
         for line in f:
             # Example 2024-12-18T14-29-39.816439_Download_CISSP_Course
-            file_name = os.path.splitext(os.path.basename(filepath))[0]
-
+            # file_name already set above
 
             if line.startswith("**Name:**"):
                 name = line.strip().split("**Name:**")[1].strip()
@@ -105,7 +106,7 @@ def get_task_details(filepath):
             if line.startswith("**Tags:**"):
                 tags = line.strip().split("**Tags:**")[1].strip()
             if line.startswith("**Due Date:**"):
-                due_date = line.strip().split("**Due Date:**")[1].strip()
+                due_date = line.strip().split("**Due Date:**")[1].strip() or "No due date"
 
     match = re.search(r"\d{4}-\d{2}-\d{2}", file_name)
     start_date = match.group() if match else "N/A"
