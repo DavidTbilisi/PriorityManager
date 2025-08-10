@@ -37,41 +37,38 @@ def files_to_tasks(files, selected_status=None):
         if selected_status is None or task_details["Status"].lower() == selected_status.lower():
             tasks.append(task_details)
 
-        if not tasks:
-            click.secho(f"No tasks found with status: {selected_status}" if selected_status else "No tasks found.", fg="yellow")
+    if not tasks:
+        click.secho(
+            f"No tasks found with status: {selected_status}" if selected_status else "No tasks found.",
+            fg="yellow",
+        )
     return tasks
 
-def get_sorted_files(dir=TASKS_DIR, by="Priority Score"):
-    files = os.listdir(dir)
-    files.sort(key=lambda x: get_task_details(os.path.join(dir, x))[by], reverse=True)
-    return files
-
-
 def show_tasks(tasks):
-    # Sort tasks by priority
-    # pprint(tasks)
+    """Display tasks in a table sorted by priority."""
     tasks.sort(key=lambda x: x["Priority Score"], reverse=True)
-
-    # Prepare headers and rows based on config
     headers = [col["name"] for col in TABLE_CONFIG]
-    table = []
+    table_rows = []
     for idx, task in enumerate(tasks, 1):
-        row = [idx]
+        row: list = [idx]
         for col in TABLE_CONFIG:
             column_name = col["name"]
             max_length = col["max_length"]
             cell_value = task.get(column_name, "")
             row.append(truncate(str(cell_value), max_length))
-        table.append(row)
-
-    # Insert "#" as the first header
+        table_rows.append(row)
     headers.insert(0, "#")
-
-    # Display the table
-    click.echo(tabulate(table, headers=headers, tablefmt="github"))
+    click.echo(tabulate(table_rows, headers=headers, tablefmt="github"))
     return tasks
 
+def get_sorted_files(dir=TASKS_DIR, by="Priority Score"):
+    """Return list of files in directory sorted descending by given field parsed from task details."""
+    files = os.listdir(dir)
+    files.sort(key=lambda x: get_task_details(os.path.join(dir, x))[by], reverse=True)
+    return files
+
 def move_to_archive(files, choice):
+    """Move the chosen file index from tasks to archive directory."""
     src = os.path.join(TASKS_DIR, files[choice - 1])
     dest = os.path.join(ARCHIVE_DIR, files[choice - 1])
     shutil.move(src, dest)
@@ -86,30 +83,36 @@ def get_task_details(filepath):
     tags = "No tags"
     name = os.path.splitext(os.path.basename(filepath))[0]
     due_date = "No due date"
+    date_added = None
     file_name = os.path.splitext(os.path.basename(filepath))[0]
     with open(filepath, "r", encoding="utf-8", errors="replace") as f:
         for line in f:
-            # Example 2024-12-18T14-29-39.816439_Download_CISSP_Course
-            # file_name already set above
-
             if line.startswith("**Name:**"):
                 name = line.strip().split("**Name:**")[1].strip()
-            if line.startswith("**Priority Score:**"):
+            elif line.startswith("**Priority Score:**"):
                 try:
                     priority = int(line.strip().split("**Priority Score:**")[1].strip())
                 except ValueError:
                     pass
-            if line.startswith("**Status:**"):
+            elif line.startswith("**Status:**"):
                 task_status = line.strip().split("**Status:**")[1].strip()
-            if line.startswith("**Description:**"):
+            elif line.startswith("**Description:**"):
                 description = line.strip().split("**Description:**")[1].strip()
-            if line.startswith("**Tags:**"):
+            elif line.startswith("**Tags:**"):
                 tags = line.strip().split("**Tags:**")[1].strip()
-            if line.startswith("**Due Date:**"):
+            elif line.startswith("**Due Date:**"):
                 due_date = line.strip().split("**Due Date:**")[1].strip() or "No due date"
+            elif line.startswith("**Date Added:**"):
+                date_added = line.strip().split("**Date Added:**")[1].strip()
 
     match = re.search(r"\d{4}-\d{2}-\d{2}", file_name)
-    start_date = match.group() if match else "N/A"
+    if match:
+        start_date = match.group()
+    else:
+        if date_added and len(date_added) >= 10:
+            start_date = date_added[:10]
+        else:
+            start_date = "N/A"
     return {
         "Task Name": name,
         "Priority Score": priority,
@@ -119,4 +122,5 @@ def get_task_details(filepath):
         "Status": task_status,
         "Description": description,
         "Tags": tags,
+        "Date Added": date_added or "",
     }

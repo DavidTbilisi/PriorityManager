@@ -41,5 +41,5 @@ def test_gantt_generates_chart(setup_dirs, monkeypatch, patch_show):
         return DummyFig()
     monkeypatch.setattr(ff, 'create_gantt', fake_create_gantt)
     runner = CliRunner()
-    res = runner.invoke(gantt)
+    res = runner.invoke(gantt, ["--no-open"])  # ensure new flag doesn't break
     assert res.exit_code == 0
