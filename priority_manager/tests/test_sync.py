@@ -12,7 +12,8 @@ def test_sync_missing_token(monkeypatch):
     runner = CliRunner()
     res = runner.invoke(sync_tasks)
     assert res.exit_code == 0
-    assert 'MS_TODO_TOKEN is not set' in res.output
+    assert 'No access token available.' in res.output
+    assert "priority-manager auth" in res.output
     assert 'Aborting sync; token required.' in res.output
 
 
@@ -90,3 +91,41 @@ def test_sync_unauthorized(monkeypatch, tmp_path):
     assert res.exit_code == 0
     assert 'Unauthorized (401)' in res.output
     assert 'invalid_token' in res.output
+
+
+def test_sync_pull_all_lists(monkeypatch, tmp_path):
+    # Setup tasks dir (capture original to restore)
+    original_tasks_dir = CONFIG['directories']['tasks_dir']
+    test_dir = tmp_path / 'tasks'
+    test_dir.mkdir()
+    CONFIG['directories']['tasks_dir'] = str(test_dir)
+    CONFIG.setdefault('ms_todo', {})['token'] = 'OK'
+
+    lists = [
+        {'id': 'L1', 'displayName': 'List Alpha'},
+        {'id': 'L2', 'displayName': 'List Beta'},
+    ]
+    tasks_alpha = [{'title': 'Alpha Task 1'}, {'title': 'Shared Title'}]
+    tasks_beta = [{'title': 'Beta Task 1'}, {'title': 'Shared Title'}]
+
+    from priority_manager.commands import todo as todo_module
+    monkeypatch.setattr(todo_module, 'get_lists', lambda *a, **k: lists)
+    def fake_get_tasks(session, token, list_id):
+        return tasks_alpha if list_id == 'L1' else tasks_beta
+    monkeypatch.setattr(todo_module, 'get_tasks', fake_get_tasks)
+    # create_task unused in pull-only test
+    monkeypatch.setattr(todo_module, 'create_task', lambda *a, **k: None)
+    # get_or_create_list for push path still needed
+    monkeypatch.setattr(todo_module, 'get_or_create_list', lambda *a, **k: 'L1')
+
+    runner = CliRunner()
+    res = runner.invoke(sync_tasks, ['--pull', '--all-lists'])
+    assert res.exit_code == 0
+    files = os.listdir(test_dir)
+    # Should create 4 files, but duplicate Shared Title appears twice with different lists
+    assert len(files) == 4
+    content = "\n".join(open(os.path.join(test_dir, f), encoding='utf-8').read() for f in files)
+    assert '**List:** List Alpha' in content
+    assert '**List:** List Beta' in content
+    # Restore CONFIG to avoid leaking temp path to later tests
+    CONFIG['directories']['tasks_dir'] = original_tasks_dir

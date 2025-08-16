@@ -5,6 +5,15 @@ from priority_manager.utils.config import CONFIG
 
 TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 ARCHIVE_DIR = CONFIG["directories"]["archive_dir"]
+ORIGINAL_TASKS_DIR = TASKS_DIR
+ORIGINAL_ARCHIVE_DIR = ARCHIVE_DIR
+
+@pytest.fixture(autouse=True)
+def reset_config_dirs():
+    # Ensure CONFIG directory paths restored before each test
+    CONFIG['directories']['tasks_dir'] = ORIGINAL_TASKS_DIR
+    CONFIG['directories']['archive_dir'] = ORIGINAL_ARCHIVE_DIR
+    yield
 
 @pytest.fixture(scope="function")
 def setup_dirs():

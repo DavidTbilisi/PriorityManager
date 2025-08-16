@@ -8,6 +8,7 @@ from .commands.todo import sync_tasks
 from .commands.search_filter import search, filter_tasks
 from .commands.gantt import gantt
 from .commands.conf import conf
+from .commands.auth import auth_command
 
 @click.group()
 def cli():
@@ -23,6 +24,7 @@ cli.add_command(filter_tasks)
 cli.add_command(gantt)
 cli.add_command(conf)
 cli.add_command(sync_tasks)
+cli.add_command(auth_command)
 
 if __name__ == "__main__":
     cli()

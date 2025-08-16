@@ -15,6 +15,10 @@ def truncate(text, length):
     return (text[:length] + "...") if len(text) > length else text
 
 def ensure_dirs():
+    # Refresh directories each call to respect test mutations to CONFIG
+    global TASKS_DIR, ARCHIVE_DIR
+    TASKS_DIR = CONFIG["directories"]["tasks_dir"]
+    ARCHIVE_DIR = CONFIG["directories"]["archive_dir"]
     if not os.path.exists(TASKS_DIR):
         os.makedirs(TASKS_DIR)
     if not os.path.exists(ARCHIVE_DIR):
@@ -26,18 +30,34 @@ def calculate_priority():
     effort = click.prompt("Enter effort (1-5, 5 = most effort required)", type=int, default=3)
     return urgency * 2 + importance * 3 - effort
 
-def files_to_tasks(files, selected_status=None):
-    """
-    Convert a list of filenames to a list of task details dictionaries.
+def files_to_tasks(files=None, selected_status=None, recursive=False, suppress_empty_message=False):
+    """Return a list of task detail dicts for provided filenames or by scanning tasks dir.
+
+    If recursive=True, walk subdirectories under tasks_dir.
     """
     tasks = []
-    for file in files:
-        filepath = os.path.join(TASKS_DIR, file)
-        task_details = get_task_details(filepath)
-        if selected_status is None or task_details["Status"].lower() == selected_status.lower():
-            tasks.append(task_details)
+    base_dir = CONFIG["directories"]["tasks_dir"]
+    if recursive and files is None:
+        for root, _, filenames in os.walk(base_dir):
+            for fname in filenames:
+                path = os.path.join(root, fname)
+                if not os.path.isfile(path):
+                    continue
+                task_details = get_task_details(path)
+                if selected_status is None or task_details["Status"].lower() == selected_status.lower():
+                    tasks.append(task_details)
+    else:
+        if files is None:
+            files = os.listdir(base_dir) if os.path.isdir(base_dir) else []
+        for file in files:
+            filepath = os.path.join(base_dir, file)
+            if not os.path.isfile(filepath):
+                continue
+            task_details = get_task_details(filepath)
+            if selected_status is None or task_details["Status"].lower() == selected_status.lower():
+                tasks.append(task_details)
 
-    if not tasks:
+    if not tasks and not suppress_empty_message:
         click.secho(
             f"No tasks found with status: {selected_status}" if selected_status else "No tasks found.",
             fg="yellow",
@@ -61,16 +81,20 @@ def show_tasks(tasks):
     click.echo(tabulate(table_rows, headers=headers, tablefmt="github"))
     return tasks
 
-def get_sorted_files(dir=TASKS_DIR, by="Priority Score"):
+def get_sorted_files(dir=None, by="Priority Score"):
     """Return list of files in directory sorted descending by given field parsed from task details."""
+    if dir is None:
+        dir = CONFIG["directories"]["tasks_dir"]
     files = os.listdir(dir)
     files.sort(key=lambda x: get_task_details(os.path.join(dir, x))[by], reverse=True)
     return files
 
 def move_to_archive(files, choice):
     """Move the chosen file index from tasks to archive directory."""
-    src = os.path.join(TASKS_DIR, files[choice - 1])
-    dest = os.path.join(ARCHIVE_DIR, files[choice - 1])
+    current_tasks_dir = CONFIG["directories"]["tasks_dir"]
+    current_archive_dir = CONFIG["directories"]["archive_dir"]
+    src = os.path.join(current_tasks_dir, files[choice - 1])
+    dest = os.path.join(current_archive_dir, files[choice - 1])
     shutil.move(src, dest)
     return files[choice - 1]
 
@@ -81,6 +105,7 @@ def get_task_details(filepath):
     task_status = "No status"
     description = "No description"
     tags = "No tags"
+    list_name = ""  # optional List origin
     name = os.path.splitext(os.path.basename(filepath))[0]
     due_date = "No due date"
     date_added = None
@@ -89,6 +114,8 @@ def get_task_details(filepath):
         for line in f:
             if line.startswith("**Name:**"):
                 name = line.strip().split("**Name:**")[1].strip()
+            elif line.startswith("**List:**"):
+                list_name = line.strip().split("**List:**")[1].strip()
             elif line.startswith("**Priority Score:**"):
                 try:
                     priority = int(line.strip().split("**Priority Score:**")[1].strip())
@@ -123,4 +150,5 @@ def get_task_details(filepath):
         "Description": description,
         "Tags": tags,
         "Date Added": date_added or "",
+        "List": list_name,
     }
