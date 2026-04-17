@@ -9,5 +9,5 @@ def test_list_tasks(setup_dirs, sample_task_file):
     runner = CliRunner()
     result = runner.invoke(list_tasks)
     assert result.exit_code == 0
-    assert "sample_task" in result.output
+    assert "Sample Task" in result.output
     assert "10" in result.output

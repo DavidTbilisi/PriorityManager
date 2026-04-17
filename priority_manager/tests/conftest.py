@@ -37,7 +37,7 @@ def sample_task_file():
         print(f"Creating file {sample_file}")
     with open(sample_file, "w") as f:
         f.write(
-            "# Sample Task\n\n"
+            "**Name:** Sample Task\n\n"
             "**Description:** This is a test task.\n\n"
             "**Priority Score:** 10\n\n"
             "**Due Date:** 2024-12-31\n\n"
