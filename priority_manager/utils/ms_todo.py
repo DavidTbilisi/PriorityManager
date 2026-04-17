@@ -3,13 +3,6 @@ import json
 import click
 import requests
 from pathlib import Path
-# msgraph-sdk is installed optionally, but its fluent client surfaces many async patterns.
-# For now we retain stable REST calls; future enhancement can add an async path.
-try:  # presence flag only
-    import msgraph  # noqa: F401
-    _MSGRAPH_AVAILABLE = True
-except Exception:
-    _MSGRAPH_AVAILABLE = False
 from .config import CONFIG
 
 GRAPH_API_BASE = "https://graph.microsoft.com/v1.0"
@@ -54,8 +47,8 @@ def _save_cache(data):
     try:
         with open(p, "w", encoding="utf-8") as f:
             json.dump(data, f)
-    except Exception:
-        pass
+    except Exception as e:
+        click.secho(f"Warning: could not save auth cache to {p}: {e}", fg="yellow", err=True)
 
 INSTRUCTION_URL = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=me/todo/lists"
 

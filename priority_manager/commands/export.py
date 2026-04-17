@@ -4,10 +4,9 @@ import json
 import yaml
 import click
 from ..utils.helpers import ensure_dirs
-
 from ..utils.config import CONFIG
+from ..utils.task_file import TaskFile
 
-TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 
 @click.command(name="export", help="Export tasks to CSV, JSON, or YAML file.")
 @click.argument("format", type=click.Choice(["csv", "json", "yaml"], case_sensitive=False))
@@ -15,37 +14,32 @@ TASKS_DIR = CONFIG["directories"]["tasks_dir"]
 def export_tasks(format, output):
     """Export tasks to CSV, JSON, or YAML file."""
     ensure_dirs()
-    files = os.listdir(TASKS_DIR)
-    
+    tasks_dir = CONFIG["directories"]["tasks_dir"]
+    files = [f for f in os.listdir(tasks_dir) if os.path.isfile(os.path.join(tasks_dir, f))]
+
     if not files:
         click.echo("No tasks found to export.")
         return
 
     tasks = []
-
-    for file in files:
-        filepath = os.path.join(TASKS_DIR, file)
-        with open(filepath, "r") as f:
-            task_data = {}
-            for line in f:
-                if line.startswith("#"):
-                    task_data["Task Name"] = line.strip("# ").strip()
-                elif line.startswith("**Description:**"):
-                    task_data["Description"] = line.split("**Description:**")[1].strip()
-                elif line.startswith("**Priority Score:**"):
-                    task_data["Priority Score"] = line.split("**Priority Score:**")[1].strip()
-                elif line.startswith("**Due Date:**"):
-                    task_data["Due Date"] = line.split("**Due Date:**")[1].strip()
-                elif line.startswith("**Date Added:**"):
-                    task_data["Date Added"] = line.split("**Date Added:**")[1].strip()
-                elif line.startswith("**Status:**"):
-                    task_data["Status"] = line.split("**Status:**")[1].strip()
-            tasks.append(task_data)
+    for filename in files:
+        filepath = os.path.join(tasks_dir, filename)
+        task = TaskFile.read(filepath)
+        tasks.append({
+            "Task Name": task.name,
+            "Description": task.description,
+            "Priority Score": task.priority_score,
+            "Due Date": task.due_date,
+            "Date Added": task.date_added,
+            "Status": task.status,
+            "Tags": task.tags,
+            "List": task.list_name,
+        })
 
     if format == "csv":
         export_file = f"{output}.csv"
-        with open(export_file, mode="w", newline="") as csv_file:
-            fieldnames = ["Task Name", "Description", "Priority Score", "Due Date", "Date Added", "Status"]
+        fieldnames = ["Task Name", "Description", "Priority Score", "Due Date", "Date Added", "Status", "Tags", "List"]
+        with open(export_file, mode="w", newline="", encoding="utf-8") as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(tasks)
@@ -53,12 +47,12 @@ def export_tasks(format, output):
 
     elif format == "json":
         export_file = f"{output}.json"
-        with open(export_file, mode="w") as json_file:
+        with open(export_file, mode="w", encoding="utf-8") as json_file:
             json.dump(tasks, json_file, indent=4)
         click.echo(f"Tasks exported successfully to {export_file}.")
 
     elif format == "yaml":
         export_file = f"{output}.yaml"
-        with open(export_file, mode="w") as yaml_file:
+        with open(export_file, mode="w", encoding="utf-8") as yaml_file:
             yaml.dump(tasks, yaml_file, default_flow_style=False)
         click.echo(f"Tasks exported successfully to {export_file}.")

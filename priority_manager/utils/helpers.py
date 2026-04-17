@@ -24,10 +24,18 @@ def ensure_dirs():
     if not os.path.exists(ARCHIVE_DIR):
         os.makedirs(ARCHIVE_DIR)
 
-def calculate_priority():
-    urgency = click.prompt("Enter urgency (1-5, 5 = most urgent)", type=int, default=3)
-    importance = click.prompt("Enter importance (1-5, 5 = most important)", type=int, default=3)
-    effort = click.prompt("Enter effort (1-5, 5 = most effort required)", type=int, default=3)
+def _prompt_1_5(message: str) -> int:
+    while True:
+        val = click.prompt(message, type=int, default=3)
+        if 1 <= val <= 5:
+            return val
+        click.secho("Please enter a value between 1 and 5.", fg="yellow")
+
+
+def calculate_priority() -> int:
+    urgency = _prompt_1_5("Enter urgency (1-5, 5 = most urgent)")
+    importance = _prompt_1_5("Enter importance (1-5, 5 = most important)")
+    effort = _prompt_1_5("Enter effort (1-5, 5 = most effort required)")
     return urgency * 2 + importance * 3 - effort
 
 def files_to_tasks(files=None, selected_status=None, recursive=False, suppress_empty_message=False):
@@ -144,6 +152,7 @@ def get_task_details(filepath):
         "Task Name": name,
         "Priority Score": priority,
         "File Name": file_name,
+        "Filepath": filepath,
         "Start Date": start_date,
         "Due Date": due_date,
         "Status": task_status,
